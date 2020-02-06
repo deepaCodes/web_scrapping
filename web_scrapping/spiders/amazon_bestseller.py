@@ -18,10 +18,12 @@ class AmazonBestsellerSpider(scrapy.Spider):
             yield response.follow(href, self.parse)
 
     def _parse_item(self, item):
-        return {
+        item_data = {
             'ranking': item.css('span.a-list-item span.zg-badge-text ::text').get(),
             'item_name': item.xpath('.//span/div/span/a/div/text()').get(),
             'star_rating': item.css('div.a-icon-row i.a-icon-star ::text').get(),
             'review_count': item.css('div.a-icon-row a.a-size-small ::text').get(),
             'price': item.css('div.a-row span.a-color-price ::text').get()
         }
+        item_data['item_name'] = str(item_data['item_name']).strip()
+        return item_data

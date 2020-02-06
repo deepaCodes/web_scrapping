@@ -32,11 +32,9 @@ Install dependency packages
 ### Running
 
 ```
-run python script web_scrapping/controllers/controller.py
+run python script ./web_scrapping/web_scrapping/controllers/amazon_scrapper.py
 
-python ./web_scrapping/web_scrapping/controllers/controller.py
-
-csv will be generated under output folder of your current directory. See below for the program console output
+csv will be generated under ./web_scrapping/output folder of your current directory. See below for the program console output
 ```
 
 ## Author
@@ -48,7 +46,8 @@ csv will be generated under output folder of your current directory. See below f
 ## Program out
 
 ```
-python ./web_scrapping/web_scrapping/controllers/controller.py
+csv out file generated under ./web_scrapping/output/
+
 INFO: Overridden settings: {'BOT_NAME': 'web_scrapping', 'FEED_FORMAT': 'csv', 'FEED_URI': 'output/%(name)s_%(time)s.csv', 'NEWSPIDER_MODULE': 'web_scrapping.spiders', 'ROBOTSTXT_OBEY': True, 'SPIDER_MODULES': ['web_scrapping.spiders']}
 2020-02-06 06:53:20 [scrapy.extensions.telnet] INFO: Telnet Password: cc6e42400eda91ab
 2020-02-06 06:53:20 [scrapy.middleware] INFO: Enabled extensions:
