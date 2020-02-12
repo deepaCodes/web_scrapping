@@ -2,6 +2,8 @@
 
 Scrapping web content using python scrapy. In this project I scrapped amazon bestseller items by categories.
 
+I have another project which scrapes data from SEC EDGAR and downloads filing forms. Checkout at https://github.com/deepaCodes/sec_edgar
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
