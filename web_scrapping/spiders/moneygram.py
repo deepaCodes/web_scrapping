@@ -69,8 +69,8 @@ class MoneygramSpider(scrapy.Spider):
             try:
                 exchange_rate = self._get_exchange_rate(country)
                 print('exchange_rate: {}'.format(exchange_rate))
-                exchange_rate_list.append(exchange_rate)
-                time.sleep(random.randint(0, 30))
+                exchange_rate_list.append(country['name'] + ' '+ exchange_rate)
+                time.sleep(random.randint(30, 60))
             except:
                 print('error for :{}'.format(country))
 
