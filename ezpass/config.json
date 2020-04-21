@@ -1,0 +1,8 @@
+{
+  "username": "your_username",
+  "password": "password_here",
+  "ezpass_login_url": "https://www.ezpassnj.com/vector/account/home/accountLogin.do",
+  "odbc_driver": "Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\Ramesh-Deepu\Documents\nj_ezpass.accdb;",
+  "chromedriver_path": "E:/chromedriver_win32/chromedriver.exe",
+  "tesseract_path": "C:/Program Files (x86)/Tesseract-OCR"
+}

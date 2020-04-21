@@ -1,0 +1,29 @@
+
+### Installing and running amazon product scrapper bot
+
+Unizp project and go unzip directory location on command window. ex: E:\python\ezpass
+
+### One time Settings
+1. Download chrome web driver from https://chromedriver.chromium.org/ and unzip to your driver. Ex: E:/chromedriver_win32/chromedriver.exe
+2. Install tesseract pre built machine learning model from : http://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-setup-4.00.00dev.exe
+    Installation target dir: C:/Program Files (x86)/Tesseract-OCR
+
+# one time configuration
+
+1. Edit file ./ezpass/config.json, enter your ezpass user/password, odbc_driver string, chromedriver_path and tesseract_path
+2. install python packages by running command: pip install -r instructions.txt
+
+
+## Test available odbc drivers
+Run python progam to show available drivers on command window
+cd E:\python\ezpass
+python test.py
+
+## Run the following commands to download csv file
+
+cd E:\python\ezpass
+
+execute RunScript.bat or double click to run
+
+
+

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import time
 
 import scrapy
 from bs4 import BeautifulSoup
@@ -23,13 +24,13 @@ class WesternUnionSpider(scrapy.Spider):
     # start_urls = ['https://www.westernunion.com/us/en/web/send-money/start/']
 
     start_urls = [
-        'https://www.westernunion.com/us/en/web/send-money/start?SrcCode=12345&ReceiveCountry=IN&SendAmount=100&FundsOut=BA']
+        'https://www.westernunion.com/us/en/web/send-money/start?SrcCode=12345&ReceiveCountry=IN&SendAmount=100']
 
     custom_settings = {
         'RETRY_ENABLED': False
     }
 
-    headless_browser = True
+    headless_browser = False
     exclude_country = ['United States']
 
     def __init__(self):
@@ -38,6 +39,9 @@ class WesternUnionSpider(scrapy.Spider):
     def initialize_web_driver(self):
         # Add additional Options to the webdriver
         chrome_options = ChromeOptions()
+        chrome_options.add_argument("--ignore-certificate-errors")
+        chrome_options.add_argument("--incognito")
+        # chrome_options.add_argument("--kiosk")
         # add the argument and make the browser Headless.
         if self.headless_browser:
             chrome_options.add_argument("--headless")
@@ -49,8 +53,39 @@ class WesternUnionSpider(scrapy.Spider):
 
     def start_requests(self):
         for url in self.start_urls:
-            yield scrapy.Request(url, callback=self.parse_exchange_rate, errback=self.failure, dont_filter=True)
+            # yield scrapy.Request(url, callback=self.parse_exchange_rate, errback=self.failure, dont_filter=True)
             # yield scrapy.Request(url, callback=self.parse_country_list, errback=self.failure, dont_filter=True)
+            yield scrapy.Request(url, callback=self.parse_wu, errback=self.failure, dont_filter=True)
+
+    def parse_wu(self, response):
+        print('url: {}'.format(response.url))
+        code_list = ['IN', 'AF', 'AL', 'BS', 'CN', 'PH', 'MX', 'CO', 'JM']
+        for code in code_list:
+            try:
+                _url = 'https://www.westernunion.com/us/en/web/send-money/start?SrcCode=12345&ReceiveCountry={}&SendAmount=100'.format(
+                    code)
+                print('opening url: {}'.format(_url))
+                self.driver.get(_url)
+                self.driver.implicitly_wait(5)
+
+                # web driver wait
+                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "fundsOut_AG")))
+                sleep(2)
+
+                _selector = self.driver.find_element_by_xpath('//*[@id="smoExchangeRate"]')
+                print('Exchange Rate:\n{}'.format(_selector.text))
+
+                sleep(3)
+                print('completed')
+
+            except Exception as ex:
+                print('exception block')
+                print(ex)
+            finally:
+                print('finally')
+                # self.driver.close()
+
+        self.driver.quit()
 
     def parse_exchange_rate(self, response):
         print('url: {}'.format(self.start_urls))
@@ -59,8 +94,8 @@ class WesternUnionSpider(scrapy.Spider):
             self.driver.get(response.url)
             self.wait_for_page_load()
 
-            #har = json.loads(self.driver.get_log('browser')[0]['message']) # get the log
-            #print('headers: ', har['log']['entries'][0]['request']['headers'])
+            # har = json.loads(self.driver.get_log('browser')[0]['message']) # get the log
+            # print('headers: ', har['log']['entries'][0]['request']['headers'])
             print(self.driver.get_log('browser'))
             print(self.driver.get_log('driver'))
             print(self.driver.get_log(None))
@@ -79,15 +114,16 @@ class WesternUnionSpider(scrapy.Spider):
             print(ex)
         finally:
             print('closing driver. top')
-            self.driver.close()
+            # closing the current window
+            self.driver.quit()
 
         country_codes = ['IN', 'BG', 'BR', 'AF']
         for _code in country_codes:
             try:
-                #sleep(randint(1, 3))
+                # sleep(randint(1, 3))
                 self.driver = self.initialize_web_driver()
                 send_amount = randint(500, 1000)
-                #_start_url = 'https://www.westernunion.com/us/en/web/send-money/start?ReceiveCountry={}&SendAmount={}'
+                # _start_url = 'https://www.westernunion.com/us/en/web/send-money/start?ReceiveCountry={}&SendAmount={}'
                 _start_url = 'https://www.westernunion.com/us/en/web/send-money/start?SrcCode=12345&ReceiveCountry={}&SendAmount={}&FundsOut=CP&FundsIn=CreditCard'
                 _url = str(_start_url).format(_code, send_amount)
                 print('opening url: {}'.format(_url))
@@ -105,7 +141,7 @@ class WesternUnionSpider(scrapy.Spider):
                 print(ex)
             finally:
                 print('closing driver')
-                self.driver.close()
+                self.driver.quit()
         """
         sleep(5)
         country_menu = self.driver.find_element_by_id("country")
@@ -171,3 +207,40 @@ class WesternUnionSpider(scrapy.Spider):
         item['Web Address'] = failure.request.url
         print('item: {}'.format(item))
         yield None
+
+    def _dead_code(self):
+        # web driver wait
+        element = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "button-top-ban-send-money")))
+        sleep(2)
+        element.click()
+        sleep(2)
+
+        type_ahead = WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable((By.ID, "country")))
+        sleep(2)
+
+        ele = self.driver.find_element_by_xpath('//*[@id="top-country-tile"]/div/button[3]')
+        sleep(1)
+        ele.click()
+        sleep(10)
+
+        if False:
+            ele = self.driver.find_element_by_xpath("//div[@role='search']")
+            sleep(2)
+            ele.click()
+            type_ahead.send_keys(Keys.NULL)
+            # type_ahead.click()
+            sleep(2)
+            type_ahead.clear()
+            sleep(2)
+            type_ahead.send_keys("India")
+            # sleep(2)
+            # type_ahead.send_keys(Keys.ARROW_DOWN)
+
+            items = self.driver.find_elements_by_xpath(
+                '//*[@id="smonewuser"]/div/app-sendmoney-option/div[2]/div[1]/div/div/form/app-country-dropdown/div[1]/ul/li/a')
+            for item in items[1:2]:
+                print(item)
+                print(item.text)
+                item.click()

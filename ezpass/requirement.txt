@@ -1,0 +1,7 @@
+selenium
+pyodbc
+pandas
+bs4
+requests
+pytesseract
+Pillow
